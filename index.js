@@ -10,11 +10,18 @@ const server = http.createServer((req, res) => {
         const parsedData = parsexml.parse(data);
 
         let maxR = 0;
-        parsedData.exchange.currency.forEach(currency => {
+        if (Array.isArray(parsedData.exchange.currency)) {
+            parsedData.exchange.currency.forEach(currency => {
+                if (parseFloat(currency.rate) > maxR) {
+                    maxR = parseFloat(currency.rate);
+                }
+            });
+        } else {
+            const currency = parsedData.exchange.currency;
             if (parseFloat(currency.rate) > maxR) {
                 maxR = parseFloat(currency.rate);
             }
-        });
+        }
 
         const buildxml = new XMLBuilder();
 
